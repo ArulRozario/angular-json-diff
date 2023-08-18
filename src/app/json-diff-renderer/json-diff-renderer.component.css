@@ -1,0 +1,6 @@
+:host {
+  display: flex;
+  gap: 0px;
+  font-family: monospace;
+  font-size: 11px;
+}

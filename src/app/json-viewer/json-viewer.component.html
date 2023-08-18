@@ -1,0 +1,117 @@
+<div class="json-container">
+  <div class="line-number-container" #lineNumbers>
+    <span *ngFor="let n of numbers"></span>
+  </div>
+  <div
+    class="content-container"
+    spellcheck="false"
+    #contentContainer
+    contenteditable="false"
+    (input)="logChange($event.target.textContent)"
+  >
+    <ng-container
+      *ngTemplateOutlet="
+        jsonViewerTemplate;
+        context: { options: { json: json, objectKeys: getKeys(json) } }
+      "
+    ></ng-container>
+  </div>
+</div>
+
+<ng-template #jsonViewerTemplate let-options="options">
+  <div class="json-renderer-wrapper" *ngIf="toOptions(options); let options">
+    <ng-container *ngIf="isArray(options.json)">
+      <ng-container *ngIf="isObjectArray(options.json)">
+        <div
+          class="json-array-container"
+          *ngFor="let item of options.json; index as i"
+        >
+          <ng-container
+            *ngTemplateOutlet="
+              jsonViewerTemplate;
+              context: {
+                options: {
+                  json: item,
+                  child: true,
+                  lastChild: i + 1 === options.json.length,
+                  firstChild: i === 0,
+                  arrayItem: true,
+                  objectKeys: getKeys(item)
+                }
+              }
+            "
+          ></ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="isPrimitiveArray(options.json)">
+        <div
+          class="json-array-container value"
+          *ngFor="let item of options.json; index as i"
+        >
+          {{ item | formatValue }}
+          <span *ngIf="i + 1 < options.json.length">,</span>
+        </div>
+      </ng-container>
+      <span *ngIf="options.json.length">]</span>
+    </ng-container>
+    <span>
+      <span
+        *ngIf="isObject(options.json) && (!options.child || options.arrayItem)"
+        >{{ '{' }}</span
+      >
+
+      <div
+        class="json-object-container"
+        *ngFor="let key of options.objectKeys; index as i"
+        [id]="options.json[key + pathPrefix] + '_' + view"
+        style="width:fit-content"
+      >
+        <span class="key">"{{ key }}" : </span>
+        <ng-container
+          *ngIf="!isArray(options.json[key]) && !isObject(options.json[key])"
+        >
+          <span class="value"> {{ options.json[key] | formatValue }}</span>
+          <span *ngIf="i + 1 < options.objectKeys.length">,</span>
+        </ng-container>
+        <span *ngIf="isObject(options.json[key])">{{ '{' }}</span>
+        <span *ngIf="isArray(options.json[key])">{{ '[' }}</span>
+        <span *ngIf="isEmptyArray(options.json[key])">]</span>
+        <span *ngIf="isEmptyObject(options.json[key])">}</span>
+        <span
+          *ngIf="
+            isEmptyObject(options.json[key]) ||
+            (isEmptyArray(options.json[key]) &&
+              i + 1 < options.objectKeys.length)
+          "
+          >,</span
+        >
+        <div
+          class="pl-5"
+          *ngIf="
+            isObject(options.json[key]) ||
+            (isArray(options.json[key]) &&
+              !isEmptyObject(options.json[key]) &&
+              !isEmptyArray(options.json[key]))
+          "
+        >
+          <ng-container
+            *ngTemplateOutlet="
+              jsonViewerTemplate;
+              context: {
+                options: {
+                  json: options.json[key],
+                  child: true,
+                  firstChild: i === 0,
+                  lastChild: i + 1 === getKeys(options.json).length,
+                  objectKeys: getKeys(options.json[key])
+                }
+              }
+            "
+          ></ng-container>
+        </div>
+      </div>
+      <span *ngIf="isObject(options.json)">}</span>
+      <span *ngIf="options.child && !options.lastChild">,</span>
+    </span>
+  </div>
+</ng-template>

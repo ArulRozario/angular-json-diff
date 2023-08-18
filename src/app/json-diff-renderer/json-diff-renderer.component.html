@@ -1,0 +1,14 @@
+<app-json-viewer
+  [json]="jsonLeft"
+  [diffProps]="leftDiffProps"
+  (offsetHeightChange)="leftHeightChange($event)"
+  [heights]="rightHeights"
+  [view]="viewEnum.LEFT"
+></app-json-viewer>
+<app-json-viewer
+  [json]="jsonRight"
+  (offsetHeightChange)="rightHeightChange($event)"
+  [diffProps]="rightDiffProps"
+  [heights]="leftHeights"
+  [view]="viewEnum.RIGHT"
+></app-json-viewer>

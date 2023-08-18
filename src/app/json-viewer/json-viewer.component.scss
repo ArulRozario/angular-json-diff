@@ -1,0 +1,57 @@
+.json-renderer-wrapper {
+  overflow-x: auto;
+}
+.json-array-container {
+  padding-left: 10px;
+}
+.json-object-container {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.json-object-container-hover:hover {
+  background-color: rgb(108, 247, 247);
+}
+.key {
+  color: rgb(0, 69, 134);
+}
+.value {
+  color: rgb(134, 31, 0);
+  word-break: keep-all;
+}
+.json-container {
+  display: flex;
+  flex-direction: row;
+}
+.line-number-container {
+  background-color: #f7f7f7;
+  min-width: 30px;
+}
+.line-number-container span {
+  counter-increment: linenumber;
+}
+.line-number-container span::after {
+  content: counter(linenumber);
+  display: block;
+  color: #506882;
+  text-align: right;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+:host {
+  line-height: 15px;
+}
+.content-container {
+  height: fit-content;
+  background-color: rgb(253, 253, 243);
+  outline: none;
+  padding: 5px;
+}
+.changed {
+  margin: 3px 0;
+  .value {
+    background-color: var(--primary-100);
+    padding: 2px 4px;
+    border-radius: 3px;
+    box-sizing: border-box;
+  }
+}
